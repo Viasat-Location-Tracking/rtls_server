@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-+g0^i@9#$e+wl8kp4sa3ml^)#ic3&daydil16=*23w!oq)t&pk
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '129.65.42.238',
+    'quuppartls.ime.calpoly.edu',
+    '129.65.42.200',
     'localhost',
     '127.0.0.1',
 ]
