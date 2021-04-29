@@ -1,10 +1,11 @@
 {% extends 'webapp/base.html' %}
+{% load static %}
 
 {% block head %}
 {{ block.super }}
 <style>
     #myChart {
-        background-image: url('static/webapp/chart_bg.png');
+        background-image: url('{% static 'webapp/chart_bg.png' %}');
         background-size: 100%;
     }
 </style>
