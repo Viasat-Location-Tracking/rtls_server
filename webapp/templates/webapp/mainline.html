@@ -1,4 +1,94 @@
 {% extends 'webapp/base.html' %}
+
+{% block head %}
+{{ block.super }}
+<style>
+    #myChart {
+        background-image: url('static/webapp/chart_bg.png');
+        background-size: 100%;
+    }
+</style>
+{% endblock head %}
+
 {% block content %}
-    <h1>Mainline</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        const labels = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        ];
+        const data = {
+            datasets: [{
+                label: 'Tag Positions',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [{
+                    x: -10,
+                    y: 0
+                  }, {
+                    x: 0,
+                    y: 10
+                  }, {
+                    x: 10,
+                    y: 5
+                  }, {
+                    x: 0.5,
+                    y: 5.5
+                }],
+            }]
+        };
+        const config = {
+            type: 'scatter',
+            data: data,
+            options: {
+                elements : {
+                    point: {
+                        radius: 10,
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false,
+                        type: 'linear',
+                        position: 'bottom',
+                        min: -26,
+                        max: 20.6
+                    },
+                    y: {
+                        display: false,
+                        type: 'linear',
+                        position: 'left',
+                        min: -10.4,
+                        max: 14.4
+                    }
+                }
+            }
+        };
+
+        var myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
+
+{% endblock scripts %}
