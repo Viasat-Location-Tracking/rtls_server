@@ -5,10 +5,11 @@ from .models import DataPoint
 
 def mainline(request):
     context = {
-        # Hash table of variables to be passed to the template renderer, e.g.:
-        'username': 'demouser',
-        'mood': 'pretty good',
-        'is_button_pushed': True,
+        "workstations": [
+            "Workstation 1A",
+            "Workstation 1B",
+            "Workstation 2",
+        ]
     }
     return render(request, 'webapp/mainline.html', context)
 
