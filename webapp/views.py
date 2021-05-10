@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .models import DataPoint
 
@@ -49,3 +49,6 @@ def executive(request):
 
 def ie(request):
     return render(request, 'webapp/ie.html')
+
+def index(request):
+    return redirect('/mainline')
