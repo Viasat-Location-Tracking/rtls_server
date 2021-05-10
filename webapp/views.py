@@ -30,10 +30,24 @@ def mainline(request):
             },
         ],
         "metrics": {
-            "daily_pace": "20%",
+            "daily_pace_percent": "85",
             "units_sent_to_clinic": 5,
             "yield": "80%",
         },
+        "units_present": [
+            {
+                "serial": "00052",
+                "tag_id": 1
+            },
+            {
+                "serial": "00056",
+                "tag_id": 14
+            },
+            {
+                "serial": "00054",
+                "tag_id": 33
+            }
+        ]
     }
     return render(request, 'webapp/mainline.html', context)
 

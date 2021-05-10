@@ -4,7 +4,7 @@
 {% block head %}
 {{ block.super }}
 <style>
-    #myChart {
+    #map {
         background-image: url('{% static 'webapp/chart_bg.png' %}');
         background-size: 100%;
     }
@@ -20,7 +20,7 @@
         <div class="row">
             <!-- Map -->
             <div class="col-8">
-                <canvas id="myChart"></canvas>
+                <canvas id="map"></canvas>
             </div>
             <div class="col-4">
                 <!-- Workstation selector -->
@@ -65,20 +65,34 @@
         <div class="row my-3">
             <!-- Daily Pace -->
             <div class="col-3">
-                <div class="card">
+                <div class="card pb-3">
                     <div class="card-body">
                         <h4 class="card-title text-center">Daily Pace</h4>
                     </div>
-                    <img src="{% static "webapp/success-gauge.jpg" %}" style="width:100%"/>
+                    <canvas id="daily_pace_canvas"></canvas>
                 </div>
             </div>
             <!-- Units Present -->
             <div class="col-3">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title text-center">Daily Pace</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Units Present</th>
+                                    <th>Tag ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for unit in units_present %}
+                                <tr>
+                                    <td>{{ unit.serial }}</td>
+                                    <td>{{ unit.tag_id }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    <img src="{% static "webapp/success-gauge.jpg" %}" style="width:100%"/>
                 </div>
             </div>
             <div class="col-2">
@@ -107,8 +121,46 @@
 
 {% block scripts %}
     {{ block.super }}
-    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js" />
 
+    <!-- Daily Pace Gauge-->
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+    <script type="text/javascript">
+        var opts = {
+            angle: -0.2, // The span of the gauge arc
+            lineWidth: 0.2, // The line thickness
+            radiusScale: 1, // Relative radius
+            pointer: {
+                length: 0.6, // // Relative to gauge radius
+                strokeWidth: 0.035, // The thickness
+                color: '#000000' // Fill color
+            },
+            limitMax: 0,     // If false, max value increases automatically if value > maxValue
+            limitMin: 100,     // If true, the min value of the gauge will be fixed
+            colorStart: '#6F6EA0',   // Colors
+            colorStop: '#C0C0DB',    // just experiment with them
+            strokeColor: '#EEEEEE',  // to see which ones work best for you
+            generateGradient: true,
+            highDpiSupport: true,     // High resolution support
+            staticZones: [
+                {strokeStyle: "#F03E3E", min: 0, max: 30}, // Red from 100 to 130
+                {strokeStyle: "#FFDD00", min: 30, max: 60}, // Yellow
+                {strokeStyle: "#198754", min: 60, max: 100}, // Green
+            ],
+            staticLabels: {
+                font: "15px sans-serif",  // Specifies font
+                labels: [0, 30, 60, 100],  // Print labels at these values
+                color: "#000000",  // Optional: Label text color
+                fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+            }
+        };
+        var target = document.getElementById("daily_pace_canvas");
+        var gauge = new Gauge(target).setOptions(opts);
+        gauge.setMinValue(0);
+        gauge.maxValue = 100;
+        gauge.set({{ metrics.daily_pace_percent }});
+    </script>
+
+    <!-- Map -->
     <script type="text/javascript">
         const labels = [
         'January',
@@ -171,8 +223,8 @@
             }
         };
 
-        var myChart = new Chart(
-            document.getElementById('myChart'),
+        var map = new Chart(
+            document.getElementById('map'),
             config
         );
     </script>
