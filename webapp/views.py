@@ -11,7 +11,29 @@ def mainline(request):
             "Workstation 1B",
             "Workstation 2",
         ],
-        "data_point_objects": data_point_objects
+        "data_point_objects": data_point_objects,
+        "move_transactions": [
+            {
+                "name": "Tag 1",
+                "approve_link": "#",
+                "deny_link": "#",
+            },
+            {
+                "name": "Tag 2",
+                "approve_link": "#",
+                "deny_link": "#",
+            },
+            {
+                "name": "Tag 3",
+                "approve_link": "#",
+                "deny_link": "#",
+            },
+        ],
+        "metrics": {
+            "daily_pace": "20%",
+            "units_sent_to_clinic": 5,
+            "yield": "80%",
+        },
     }
     return render(request, 'webapp/mainline.html', context)
 
