@@ -1,0 +1,33 @@
+{% extends 'webapp/base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Clinic</h1>
+<div class="table-responsive">
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+    <thead>
+    <tr>
+        <th scope="col">tag id</th>
+        <th scope="col">Date/Time Assigned</th>
+        <th scope="col">Date/Time Entered</th>
+        <th scope="col">Origin Workstation</th>
+        <th scope="col">Nonconforming Description</th>
+        <th scope="col">Date/Time Resolved</th>
+        <th scope="col">Date/Time Left Clinic</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="row">1</th>
+        <td>1-01-2021, 16:20</td>
+        <td>1-01-2021, 17:20</td>
+        <td>Station 1</td>
+        <td>Tag is broken</td>
+        <td>1-02-2021, 10:00</td>
+        <td>1-02-2021, 13:00</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+{% endblock content %}
