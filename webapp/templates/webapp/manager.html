@@ -53,7 +53,10 @@
         </div>
     </div>
     </div>
+    <span id="clock"></span>
 </div>
+
+
 {% endblock content %}
 
 
@@ -61,7 +64,7 @@
 
 {% block scripts %}
     {{ block.super }}
-
+<!-- Map and graph code -->
     <script type="text/javascript">
         const labels = [
         'January',
@@ -196,6 +199,7 @@
 <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Gauges code -->
 <script type="text/javascript">
     var opts = {
         angle: 0, // The span of the gauge arc
@@ -263,7 +267,7 @@
     var gauge = new Gauge(target).setOptions(opts);
     gauge.setMinValue(0);
     gauge.maxValue = 100;
-    gauge.set(70);
+    gauge.set(40);
 
 
     var target = document.getElementById("cycle_time_canvas");
@@ -271,8 +275,23 @@
     gauge.setMinValue(0);
     gauge.maxValue = 100;
     gauge.set(70);
+
+
+    incElement = document.getElementById("cycle_time_canvas");
+    // function increaseGauge(){
+    //     incElement.set()
+    // }
 </script>
 
+<!-- Just messing with live updates-->
+<script type="text/javascript">
+    var clockElement = document.getElementById('clock');
 
+    function clock() {
+        clockElement.textContent = new Date().toString();
+    }
+
+    setInterval(clock, 1000);
+</script>
 
 {% endblock scripts %}
