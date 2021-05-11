@@ -17,15 +17,54 @@
     <h1>Manager</h1>
     <div class="container">
         <div class="row">
-            <div class = "col-8">
+            <div class = "col-5">
                 <canvas id= "myChart"></canvas>
+            </div>
+            <div class = "col-4">
+                <canvas id="barChart"></canvas>
+            </div>
+
+        <div class="row">
+            <div class="col-3">
+                <div class="card pb-3">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Process Time</h4>
+                    </div>
+                    <canvas id="process_time_canvas"></canvas>
+                </div>
+                
+            </div>
+            <div class="col-3">
+                <div class="card pb-3">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Queue Time</h4>
+                    </div>
+                    <canvas id="queue_time_canvas"></canvas>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card pb-3">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Cycle Time</h4>
+                    </div>
+                    <canvas id="cycle_time_canvas"></canvas>
+            </div>
+            
         </div>
     </div>
+    </div>
+    <span id="clock"></span>
 </div>
+
+
 {% endblock content %}
+
+
+
+
 {% block scripts %}
     {{ block.super }}
-
+<!-- Map and graph code -->
     <script type="text/javascript">
         const labels = [
         'January',
@@ -55,7 +94,7 @@
                 }],
             }]
         };
-        const config = {
+        var config = {
             type: 'scatter',
             data: data,
             options: {
@@ -92,6 +131,167 @@
             document.getElementById('myChart'),
             config
         );
+
+
+
+        //bar chart
+        var config = {
+            type: 'scatter',
+            data: data,
+            options: {
+                scales: {
+                y: {
+                    beginAtZero: true
+                }
+                }
+            }
+        };
+        var mixedChart = new Chart(
+            document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                datasets: [{
+                    label: 'Occurances',
+                    data: [15, 10, 5, 2],
+                    // this dataset is drawn below
+                    yAxisID: 'leftAxis',
+                    order: 2
+                }, {
+                    label: 'Cumulative Percentage',
+                    data: [15/32, 25/32, 30/32, 32/32],
+                    type: 'line',
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    // this dataset is drawn on top
+                    yAxisID: 'rightAxis',
+                    order: 1
+                }],
+                labels: ['Software Error', 'Physical Defect', 'Op. Error', 'Misc.']
+            },
+            options: {
+                scales: {
+                    /*
+                    y: {
+                    beginAtZero: true
+                    }
+                    */
+                    leftAxis: {
+                        id: 'A',
+                        type: 'linear',
+                        position: 'left',
+                    },
+                    rightAxis: {
+                        id: 'B',
+                        type: 'linear',
+                        position: 'right',
+                        //ticks: {
+                          //  max: 1,
+                            //min: 0
+                        //}
+                    }
+                }
+            }
+        });
+
+
     </script>
+
+<script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Gauges code -->
+<script type="text/javascript">
+    var opts = {
+        angle: 0, // The span of the gauge arc
+        lineWidth: 0.2, // The line thickness
+        radiusScale: 1, // Relative radius
+        pointer: {
+            length: 0.6, // // Relative to gauge radius
+            strokeWidth: 0.035, // The thickness
+            color: '#000000' // Fill color
+        },
+        limitMax: 0,     // If false, max value increases automatically if value > maxValue
+        limitMin: 100,     // If true, the min value of the gauge will be fixed
+        colorStart: '#6F6EA0',   // Colors
+        colorStop: '#C0C0DB',    // just experiment with them
+        strokeColor: '#EEEEEE',  // to see which ones work best for you
+        generateGradient: true,
+        highDpiSupport: true,     // High resolution support
+        staticZones: [
+            {strokeStyle: "#F03E3E", min: 0, max: 30}, // Red from 100 to 130
+            {strokeStyle: "#FFDD00", min: 30, max: 60}, // Yellow
+            {strokeStyle: "#198754", min: 60, max: 100}, // Green
+        ],
+        staticLabels: {
+            font: "15px sans-serif",  // Specifies font
+            labels: [0, 30, 60, 100],  // Print labels at these values
+            color: "#000000",  // Optional: Label text color
+            fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+        }
+    };
+    
+    
+    /*
+    var gaugeLimits = {
+        maximum: 150,
+        minimum: 0,
+        redPercent: .3,
+        yellowPercent: .3
+    };
+
+    opts.limitMax = gaugeLimits.maximum;
+    opts.limitMin = gaugeLimits.minimum;
+    opts.staticZones[0].max = (gaugeLimits.maximum*gaugeLimits.redPercent);
+    opts.staticZones[1].min = (gaugeLimits.maximum*gaugeLimits.redPercent);
+    opts.staticZones[1].max = (gaugeLimits.maximum*gaugeLimits.redPercent)+(gaugeLimits.maximum*gaugeLimits.yellowPercent);
+    opts.staticZones[2].min = (gaugeLimits.maximum*gaugeLimits.redPercent)+(gaugeLimits.maximum*gaugeLimits.yellowPercent);
+    opts.staticZones[2].max = gaugeLimits.maximum;
+    
+    var optsCopy =opts;
+    */
+    var target = document.getElementById("process_time_canvas");
+    var gauge = new Gauge(target).setOptions(opts);
+    gauge.setMinValue(0);
+    gauge.maxValue = 150;
+    gauge.set(120);
+
+    /* Trying some things out
+    var tempColor = opts.colorStart;
+    opts.colorStart = opts.colorStop;
+    opts.colorStop = tempColor;
+    //opts.angle = -.01;
+    */
+    
+
+    var target = document.getElementById("queue_time_canvas");
+    var gauge = new Gauge(target).setOptions(opts);
+    gauge.setMinValue(0);
+    gauge.maxValue = 100;
+    gauge.set(40);
+
+
+    var target = document.getElementById("cycle_time_canvas");
+    var gauge = new Gauge(target).setOptions(opts);
+    gauge.setMinValue(0);
+    gauge.maxValue = 100;
+    gauge.set(70);
+
+
+    incElement = document.getElementById("cycle_time_canvas");
+    // function increaseGauge(){
+    //     incElement.set()
+    // }
+</script>
+
+<!-- Just messing with live updates-->
+<script type="text/javascript">
+    var clockElement = document.getElementById('clock');
+
+    function clock() {
+        clockElement.textContent = new Date().toString();
+    }
+
+    setInterval(clock, 1000);
+</script>
 
 {% endblock scripts %}
