@@ -21,7 +21,7 @@ class Tag(models.Model):
 
 
     def __str__(self):
-        return "Tag %d is attached to serial number %s" % (self.tag_id, self.serial_num)
+        return "Tag %d, serial number %s" % (self.tag_id, self.serial_num)
 
 class ClinicItem(models.Model):
     tag_id = models.IntegerField()
@@ -30,3 +30,6 @@ class ClinicItem(models.Model):
     removed_from_clinic = models.DateTimeField(null=True)
     from_zone = ArrayField(models.CharField(max_length=150))
     problem = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return "Tag %d, serial number %s" % (self.tag_id, self.serial_num)
