@@ -101,7 +101,7 @@ def data(request):
 
             units = add_serial_numbers(units, 'tag_id')
 
-            response = units
+            return JsonResponse({'data': units})
     
     # Non-workstation-related queries
     else:
@@ -116,9 +116,10 @@ def data(request):
 
             data = add_serial_numbers(data, 'tag_id', 'x_pos', 'y_pos', 'button_pushed')
 
-            response = data
+            return JsonResponse({'data': data})
 
-    return JsonResponse({'data': response})
+    # If nothing matched, abort
+    return HttpResponseBadRequest("Invalid request")
 
 
 # Helper function to match serial numbers and tags
