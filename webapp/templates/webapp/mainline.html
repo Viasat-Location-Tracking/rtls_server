@@ -106,7 +106,7 @@
                                         <form action="#" method="get" id="clinicForm">
                                             <div class="mb-3">
                                                 <label for="serial" class="form-label">Serial Number</label>
-                                                <select class="form-control" id="serial">
+                                                <select class="form-control" id="clinic-form-serial">
                                                 {% for unit in units_present %}
                                                     <option>{{ unit.serial }}</option>
                                                 {% endfor %}
@@ -155,8 +155,10 @@
 {% block scripts %}
     {{ block.super }}
 
-    <!-- Map -->
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+
     <script type="text/javascript">
+        // Map
         const labels = [
         'January',
         'February',
@@ -222,11 +224,9 @@
             document.getElementById('map'),
             config
         );
-    </script>
 
-    <!-- Daily Pace Gauge-->
-    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
-    <script type="text/javascript">
+
+        // Daily Pace Gauge
         var opts = {
             angle: -0.2, // The span of the gauge arc
             lineWidth: 0.2, // The line thickness
@@ -260,25 +260,45 @@
         gauge.setMinValue(0);
         gauge.maxValue = 100;
         gauge.set({{ metrics.daily_pace_percent }});
-    </script>
 
-    <!-- Clinic Form -->
-    <script type="text/javascript">
-        var table = document.getElementById("units-present-table");
-        var cells = table.getElementsByTagName("td");
-
-        for(var i = 0; i < cells.length; i++) {
-            cells[i].onclick = function() {
-                [...this.parentNode.parentNode.children].forEach(function(child) {
-                    child.classList.remove("table-active");
-                });
-                this.parentNode.classList.add("table-active");
-            }
-        }
-
+        // Clinic Form
         function submitClinicForm() {
             document.getElementById("clinicForm").submit();
-            //FIXME document.getElementById("clinicFormModal").hide();
+        }
+
+        // ********** AJAX UPDATERS *********** //
+
+        // Units Present
+        function updateUnitsPresent() {
+            $.ajax({
+                url: "{% url 'webapp:data' %}",
+                data: {
+                    'workstation': $("#workstation").val(),
+                    'request_type': 'units_present',
+                },
+                success: (response) => {
+                    var units_present_table_body = $("#units-present-table tbody");
+
+                    // Delete all items out of present units table
+                    units_present_table_body.empty();
+
+                    // Add in new data unit by unit
+                    for (var i in response.data) {
+                        var row = "<tr><td>" + response.data[i].serial_num + "</td><td>" + response.data[i].tag_id + "</td></tr>";
+                        units_present_table_body.append(row);
+                    }
+
+                    // Delete all items out of clinic form
+                    clinic_form_tag_list = $("#clinic-form-serial");
+                    clinic_form_tag_list.find("option").remove();
+
+                    // Add in new data unit by unit
+                    for (var i in response.data) {
+                        var option = "<option>" + response.data[i].serial_num + "</option>";
+                        clinic_form_tag_list.append(option);
+                    }
+                }
+            });
         }
     </script>
 
