@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+g0^i@9#$e+wl8kp4sa3ml^)#ic3&daydil16=*23w!oq)t&pk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'quuppartls.ime.calpoly.edu',
@@ -38,7 +38,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'webapp.apps.WebappConfig',
-    'channels',
+#    'channels',    # Uncomment to enable Channels library for websockets
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
