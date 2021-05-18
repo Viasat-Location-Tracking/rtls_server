@@ -1,3 +1,6 @@
 *for john to write terminal commands because he keeps forgetting them each reboot :)
 
 python3 manage.py runserver
+
+1) git add *
+2) git commit -m "" 

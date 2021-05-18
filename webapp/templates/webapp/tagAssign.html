@@ -1,0 +1,80 @@
+{% extends 'webapp/base.html' %}
+{% load static %}
+
+<!-- 
+    README: 
+    Idea for the table is for there to be ID/SN/column with remove buttons
+    Top assignment part is just text boxes
+    Most of this is based on mainline page
+    Used 2 tables for testing as one wasn't working, bottom one is pulling tag information from views.py
+-->
+
+{% block content %}
+    <h1>Tag Assign</h1>
+
+    <!-- Tag assignment stuff-->
+    <form>
+        <div class="row">
+            <div class="form-group">
+            <label for="tagID_TB" class="sr-only">Tag ID</label>
+            <input type="text" class="form-control" id="tagID_TB" placeholder="1234">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+            <label for="SN_TB" class="sr-only">Serial Number</label>
+            <input type="password" class="form-control" id="SN_TB" placeholder="DDMMYYYY 47358 XXXX">
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Confirm Tag Assignment</button>
+        </div>
+      </form>
+
+    
+    
+    <!-- Active tag table -->
+    <table class="table" id="main_table">
+        <thead>
+            <tr>
+                <th>Tag ID</th>
+                <th>Serial Number</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unit in tag_point_objects %}
+            <tr>
+                <td>{{unit.tag_id}}</td>
+                <td>{{unit.serial}}</td>
+                <td>
+                    <a class="btn btn-sm btn-success">Remove</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Testing Table-->
+    <table class="table" id="main_table">
+        <thead>
+            <tr>
+                <th>Tag ID</th>
+                <th>Serial Number</th>
+                {% comment %} <th>Remove</th> {% endcomment %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for unit in tags_hardcode %}
+            <tr>
+                <td>{{unit.serial}}</td>
+                <td>{{unit.tag_id}}</td>
+                <!--
+                <td>
+                    <a class="btn btn-sm btn-success">Remove</a>
+                </td>
+                -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

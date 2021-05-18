@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from .models import DataPoint
+from .models import Tag
 
 def mainline(request):
     data_point_objects = DataPoint.objects.all()
@@ -63,6 +64,27 @@ def executive(request):
 
 def ie(request):
     return render(request, 'webapp/ie.html')
+
+def tagAssign(request):
+    tag_objects = Tag.objects.all()
+    context_tag = {
+        "tag_point_objects": tag_objects,
+        "tags_hardcode" :[
+            {
+                "serial": "00052",
+                "tag_id": 1
+            },
+            {
+                "serial": "00056",
+                "tag_id": 14
+            },
+            {
+                "serial": "00054",
+                "tag_id": 33
+            }
+        ]
+    }
+    return render(request, 'webapp/tagAssign.html', context_tag)
 
 def index(request):
     return redirect('/mainline')

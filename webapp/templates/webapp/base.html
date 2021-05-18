@@ -35,6 +35,9 @@
                       <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'ie' %}active{% endif %}" href="{% url 'webapp:ie' %}">IE & CI</a>
                       </li>
+                      <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'tagAssign' %}active{% endif %}" href="{% url 'webapp:tagAssign' %}">Tag Assignment</a>
+                      </li>
                     </ul>
                   </div>
                 </div>
