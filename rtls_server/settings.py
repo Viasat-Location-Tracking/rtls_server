@@ -125,7 +125,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -148,3 +148,9 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     },
 }
+
+##### CUSTOM WEBAPP SETTINGS BELOW #####
+
+# How far back to look (in seconds) to determine where a tag is currently located
+CURRENT_POSITION_LOOKBACK = 800000
+POSTGRES_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
