@@ -1,18 +1,10 @@
-<<<<<<< HEAD
 from django.http import HttpResponse, HttpRequest
-=======
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
->>>>>>> 55748d2eb1e4eb962cb52f649531a83fefa4956a
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
 
-<<<<<<< HEAD
 from .models import DataPoint
 from .models import Tag
-=======
-from .models import ClinicItem, DataPoint, Tag
->>>>>>> 55748d2eb1e4eb962cb52f649531a83fefa4956a
 
 import datetime
 import json
@@ -94,7 +86,6 @@ def executive(request):
 def ie(request):
     return render(request, 'webapp/ie.html')
 
-<<<<<<< HEAD
 def tagAssign(request):
     tag_objects = Tag.objects.all()
     context_tag = {
@@ -123,9 +114,6 @@ def insert_tagAssign(request):
     return redirect('/tagAssign.html')
     #return render(request, 'webapp/manager.html')
 
-=======
-# Homepage (redirects to mainline)
->>>>>>> 55748d2eb1e4eb962cb52f649531a83fefa4956a
 def index(request):
     return redirect(reverse('webapp:mainline'))
 
