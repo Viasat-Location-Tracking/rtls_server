@@ -1,6 +1,18 @@
 {% extends 'webapp/base.html' %}
 {% load static %}
 
+{% block head %}
+{{ block.super }}
+<style>
+    #myChart {
+        background-image: url('{% static 'webapp/chart_bg.png' %}');
+        background-size: 100%;
+    }
+</style>
+{% endblock head %}
+
+
+
 {% block content %}
 <div class=row>
     <h1>IE</h1>
