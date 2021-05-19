@@ -5,3 +5,4 @@ from .models import Tag
 # Register your models here.
 admin.site.register(DataPoint)
 admin.site.register(Tag)
+admin.site.register(ClinicItem)
