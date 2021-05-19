@@ -108,10 +108,11 @@ def tagAssign(request):
     return render(request, 'webapp/tagAssign.html', context_tag)
 
 def insert_tagAssign(request):
-    content = request.POST['tagID_TB', 'SN_TB', 'time_TB']
-    newTag = Tag(content)
+    newTag = Tag(tag_id = request.POST['tagID_TB'], serial_num = request.POST['SN_TB'], valid_after = request.POST['time_TB'])
+    #content = request.POST['tagID_TB', 'SN_TB', 'time_TB']
+    #newTag = Tag(content)
     newTag.save()
-    return redirect('/tagAssign.html')
+    return redirect('/tagAssign')
     #return render(request, 'webapp/manager.html')
 
 def index(request):

@@ -10,5 +10,6 @@ urlpatterns = [
     path('executive', views.executive, name='executive'),
     path('ie', views.ie, name='ie'),
     path('tagAssign', views.tagAssign, name = 'tagAssign'),
+    path('insert_tagAssign', views.insert_tagAssign, name = 'insert_tagAssign'),
     path('data', views.data, name='data') # used for returning metrics and other data via AJAX requests on the browser side
 ]

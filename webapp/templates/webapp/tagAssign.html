@@ -10,16 +10,16 @@
 -->
 
 {% block content %}
-    <h1>Tag Assign</h1>
+    <h1>You know what you clicked on</h1>
 
 
     
 
 
     <!-- Tag assignment stuff-->
-    <form method = "post" action = "webapp/insert_tagAssign" >
+    <form method = "post" action = "insert_tagAssign" >
         {% csrf_token %}
-        <div class="row">
+        <div class="row invisible">
             <div class="form-group">
             <label for="num_TB" class="sr-only">num ID</label>
             <input type="text" name="num_TB" class="form-control" id="num_TB" placeholder="1234">
