@@ -3,7 +3,26 @@
 
 {% block content %}
 
-<div id="chartContainer" style="height: 300px; width: 50%;"></div>
+<div class="row">
+  <div class="col-8">
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  </div>
+  <div class="col-4">
+    <!-- Timeframe selector -->
+    <form>
+      <div class="form-group">
+        <label for="workstation">Pick a timeframe:</label>
+        <select class="form-control" id="timeframe">
+          <option value="1day">Day</option>
+          <option value="1week">Week</option>
+          <option value="1month">Month</option>
+          <option value="1year">Year</option>
+        </select>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-3">
     <div class="card mb-2">
@@ -59,29 +78,46 @@
 
 
       function updateUnitsSentToClinic() {
-            $.ajax({
-                url: "{% url 'webapp:data' %}",
-                data: {
-                    'request_type': 'units_sent_to_clinic',
-                    'workstation': 'Workstation 2',
-                    'hours_ago': 8
-                },
-                success: (response) => {
-                    // Clear out old data
-                    map.data.datasets[0].data = [];
+        $.ajax({
+            url: "{% url 'webapp:data' %}",
+            data: {
+                'request_type': 'units_sent_to_clinic',
+                'workstation': 'Workstation 2',
+                'hours_ago': 8
+            },
+            success: (response) => {
+                // Clear out old data
+                map.data.datasets[0].data = [];
 
-                    // Feed in new map data
-                    for (var i in response.data) {
-                        map.data.datasets[0].data.push({
-                            'x': response.data[i]['x_pos'],
-                            'y': response.data[i]['y_pos']
-                        })
-                    }
-
-                    map.update();
+                // Feed in new map data
+                for (var i in response.data) {
+                    map.data.datasets[0].data.push({
+                        'x': response.data[i]['x_pos'],
+                        'y': response.data[i]['y_pos']
+                    })
                 }
-            });
-        }
+
+                map.update();
+            }
+        });
+      }
+
+      function updatePercentTimeOnTakt() {
+        $.ajax({
+          url: "{% url 'webapp:data' %}",
+          data: {
+            'request_type': 'percent_time_on_takt',
+            'timeframe': $("#timeframe").val()
+          },
+          success: function(response) {
+            alert(response);
+          }
+        });
+      }
+
+      document.getElementById("timeframe").addEventListener('change', function(event) {
+        updatePercentTimeOnTakt();
+      });
 
       </script>
 
