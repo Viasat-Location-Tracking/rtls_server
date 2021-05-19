@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 
 from .models import DataPoint
@@ -85,6 +85,13 @@ def tagAssign(request):
         ]
     }
     return render(request, 'webapp/tagAssign.html', context_tag)
+
+def insert_tagAssign(request):
+    content = request.POST['tagID_TB', 'SN_TB', 'time_TB']
+    newTag = Tag(content)
+    newTag.save()
+    return redirect('/tagAssign.html')
+    #return render(request, 'webapp/manager.html')
 
 def index(request):
     return redirect('/mainline')

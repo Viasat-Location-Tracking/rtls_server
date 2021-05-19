@@ -9,5 +9,6 @@ urlpatterns = [
     path('manager', views.manager, name='manager'),
     path('executive', views.executive, name='executive'),
     path('ie', views.ie, name='ie'),
-    path('tagAssign', views.tagAssign, name='tagAssign')
+    path('tagAssign', views.tagAssign, name='tagAssign'),
+    path('insert_tagAssign', views.insert_tagAssign, name='tagAssign')
 ]

@@ -12,23 +12,41 @@
 {% block content %}
     <h1>Tag Assign</h1>
 
+
+    
+
+
     <!-- Tag assignment stuff-->
-    <form>
+    <form method = "post" action = "webapp/insert_tagAssign" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="form-group">
+            <label for="num_TB" class="sr-only">num ID</label>
+            <input type="text" name="num_TB" class="form-control" id="num_TB" placeholder="1234">
+            </div>
+        </div>
         <div class="row">
             <div class="form-group">
             <label for="tagID_TB" class="sr-only">Tag ID</label>
-            <input type="text" class="form-control" id="tagID_TB" placeholder="1234">
+            <input type="text" name="tagID_TB" class="form-control" id="tagID_TB" placeholder="1234">
             </div>
         </div>
         <div class="row">
             <div class="form-group">
-            <label for="SN_TB" class="sr-only">Serial Number</label>
-            <input type="password" class="form-control" id="SN_TB" placeholder="DDMMYYYY 47358 XXXX">
+                <label for="SN_TB" class="sr-only">Serial Number</label>
+                <input name="SN_TB" class="form-control" id="SN_TB" placeholder="DDMMYYYY 47358 XXXX">
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Confirm Tag Assignment</button>
         </div>
-      </form>
+        <div class="row">
+            <div class="form-group">
+            <label for="time_TB" class="sr-only">Timestamp</label>
+            <input type="text" name="time_TB" class="form-control" id="time_TB" value="2021-05-17 20:47:00-07">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Confirm Tag Assignment</button>
 
+        
+    </form>
     
     
     <!-- Active tag table -->
@@ -44,7 +62,7 @@
             {% for unit in tag_point_objects %}
             <tr>
                 <td>{{unit.tag_id}}</td>
-                <td>{{unit.serial}}</td>
+                <td>{{unit.serial_num}}</td>
                 <td>
                     <a class="btn btn-sm btn-success">Remove</a>
                 </td>
@@ -65,7 +83,7 @@
         <tbody>
             {% for unit in tags_hardcode %}
             <tr>
-                <td>{{unit.serial}}</td>
+                <td>{{unit.serial_num}}</td>
                 <td>{{unit.tag_id}}</td>
                 <!--
                 <td>
@@ -78,3 +96,15 @@
     </table>
 
 {% endblock content %}
+
+<!--
+<script type="text/javascript">
+    /// Trying to get the timestamp input to auto fill
+    var clockElement = document.getElementById('time_TB');
+
+    function clock() {
+        clockElement.value = new Date().toString();
+    }
+
+</script>
+-->
