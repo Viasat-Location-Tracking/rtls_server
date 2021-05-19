@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+g0^i@9#$e+wl8kp4sa3ml^)#ic3&daydil16=*23w!oq)t&pk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'quuppartls.ime.calpoly.edu',
@@ -38,7 +38,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'webapp.apps.WebappConfig',
-    'channels',
+#    'channels',    # Uncomment to enable Channels library for websockets
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -125,7 +125,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -148,3 +148,9 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     },
 }
+
+##### CUSTOM WEBAPP SETTINGS BELOW #####
+
+# How far back to look (in seconds) to determine where a tag is currently located
+CURRENT_POSITION_LOOKBACK = 800000
+POSTGRES_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
