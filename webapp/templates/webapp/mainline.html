@@ -134,7 +134,7 @@
                     <div class="card mb-2">
                         <div class="card-body">
                             <h6 class="card-title text-center">Units Sent to Clinic</h6>
-                            <p class="card-text text-center fs-1">{{ metrics.units_sent_to_clinic }}</p>
+                            <p class="card-text text-center fs-1" id="units-sent-to-clinic">{{ metrics.units_sent_to_clinic }}</p>
                         </div>
                     </div>
                 </div>
@@ -300,6 +300,7 @@
                     'workstation': $("#workstation").val(),
                     'request_type': 'units_present',
                 },
+
                 success: (response) => {
                     var units_present_table_body = $("#units-present-table tbody");
 
@@ -325,11 +326,32 @@
             });
         }
 
+        function updateUnitsSentToClinic() {
+            $.ajax({
+                url: "{% url 'webapp:data' %}",
+                data: {
+                    'workstation': $("#workstation").val(),
+                    'request_type': 'units_sent_to_clinic',
+                    'hours_ago': 8
+                },
+                success: (response) => {
+                    $("#units-sent-to-clinic").innerHTML(response.data);
+                }
+            })
+        }
+
         // Start running the updaters
         $(document).ready(() => {
             setInterval(updateMap, 250);
             setInterval(updateUnitsPresent, 1000);
+            setInterval(updateUnitsSentToClinic, 10000);
         });
+
+        // Event listeners
+        $("#workstation").change(() => {
+            updateUnitsPresent();
+            updateUnitsSentToClinic();
+        })
     </script>
 
 {% endblock scripts %}
