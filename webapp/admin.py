@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import DataPoint
-from .models import Tag, ClinicItem
+from .models import DataPoint, Tag, ClinicItem
 
 # Register your models here.
 admin.site.register(DataPoint)

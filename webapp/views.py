@@ -1,10 +1,9 @@
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
 
-from .models import DataPoint
-from .models import Tag
+from .models import DataPoint, Tag, ClinicItem
 
 import datetime
 import json
@@ -86,6 +85,7 @@ def executive(request):
 def ie(request):
     return render(request, 'webapp/ie.html')
 
+# Tag Assignment Page
 def tagAssign(request):
     tag_objects = Tag.objects.all()
     context_tag = {
@@ -144,10 +144,10 @@ def data(request):
 
             return JsonResponse({'data': units})
 
-        # Units sent to clinic from workstation in past 8 hours
+        # Units sent to clinic from workstation in past x hours
         if request_type == "units_sent_to_clinic":
             hours_ago = request.GET['hours_ago']
-            oldest_valid_timestamp = datetime.datetime.now() - datetime.timedelta(hours=hours_ago)
+            oldest_valid_timestamp = datetime.datetime.now() - datetime.timedelta(hours=int(hours_ago))
             units = ClinicItem.objects.filter(
                 from_zone__contains = [workstation],
                 added_to_clinic__gte = oldest_valid_timestamp
