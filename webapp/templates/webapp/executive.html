@@ -2,5 +2,87 @@
 {% load static %}
 
 {% block content %}
-    <h1>Executive</h1>
+
+<div id="chartContainer" style="height: 300px; width: 50%;"></div>
+<div class="row">
+  <div class="col-3">
+    <div class="card mb-2">
+        <div class="card-body">
+            <h6 class="card-title text-center">% Time on Takt</h6>
+            <p class="card-text text-center fs-1">{{ metrics.perc_on_takt }}</p>
+        </div>
+    </div>
+  </div> 
+  <div class="col-5">
+    <div class="card mb-2">
+        <div class="card-body">
+            <h6 class="card-title text-center">On Time Delivery</h6>
+            <p class="card-text text-center fs-1">{{ metrics.on_time_delivery }}</p>
+        </div>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
+
+{% block scripts %}
+  {{ block.super }}
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        var chart = new CanvasJS.Chart("chartContainer",
+        {
+          title:{
+          text: "Yield Overtime"  
+          },
+          data: [
+          {        
+            type: "line",
+            dataPoints: [
+            { x: 10, y: 21 },
+            { x: 20, y: 25},
+            { x: 30, y: 20 },
+            { x: 40, y: 25 },
+            { x: 50, y: 27 },
+            { x: 60, y: 28 },
+            { x: 70, y: 28 },
+            { x: 80, y: 24 },
+            { x: 90, y: 26}
+          
+            ]
+          }
+          ]
+        });
+    
+        chart.render();
+      }
+
+
+      function updateUnitsSentToClinic() {
+            $.ajax({
+                url: "{% url 'webapp:data' %}",
+                data: {
+                    'request_type': 'units_sent_to_clinic',
+                    'workstation': 'Workstation 2',
+                    'hours_ago': 8
+                },
+                success: (response) => {
+                    // Clear out old data
+                    map.data.datasets[0].data = [];
+
+                    // Feed in new map data
+                    for (var i in response.data) {
+                        map.data.datasets[0].data.push({
+                            'x': response.data[i]['x_pos'],
+                            'y': response.data[i]['y_pos']
+                        })
+                    }
+
+                    map.update();
+                }
+            });
+        }
+
+      </script>
+
+{% endblock scripts %}

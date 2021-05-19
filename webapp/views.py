@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
 
-from .models import DataPoint, Tag
+from .models import ClinicItem, DataPoint, Tag
 
 import datetime
 import json
@@ -39,6 +39,9 @@ def mainline(request):
             "daily_pace_percent": "85",
             "units_sent_to_clinic": 5,
             "yield": "80%",
+            "on_time_delivery": "85%",
+            "perc_on_takt" : "71%"
+
         },
         "units_present": [
             {
@@ -67,7 +70,16 @@ def manager(request):
 
 # Executive Page
 def executive(request):
-    return render(request, 'webapp/executive.html')
+    context = {
+        "metrics": {
+            "daily_pace_percent": "85",
+            "units_sent_to_clinic": 5,
+            "yield": "80%",
+            "on_time_delivery": "85%",
+            "perc_on_takt" : "71%"
+        }
+    }
+    return render(request, 'webapp/executive.html', context)
 
 # IE/CI Page
 def ie(request):
@@ -102,6 +114,17 @@ def data(request):
             units = add_serial_numbers(units, 'tag_id')
 
             return JsonResponse({'data': units})
+
+        # Units sent to clinic from workstation in past 8 hours
+        if request_type == "units_sent_to_clinic":
+            hours_ago = request.GET['hours_ago']
+            oldest_valid_timestamp = datetime.datetime.now() - datetime.timedelta(hours=hours_ago)
+            units = ClinicItem.objects.filter(
+                from_zone__contains = [workstation],
+                added_to_clinic__gte = oldest_valid_timestamp
+            )
+
+            return JsonResponse({'data': len(units.values())})
     
     # Non-workstation-related queries
     else:
