@@ -11,8 +11,368 @@
 </style>
 {% endblock head %}
 
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% comment %} <div class = "col-5">
+                <canvas id= "myChart"></canvas>
+            </div> {% endcomment %}
+            <div class = "col-3">
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class = "col-3">
+                <canvas id="value_nonvalue"></canvas>
+            </div>
+        </div>
+
+        <div class="col-8">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card pb-3">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">Process Time</h4>
+                        </div>
+                        <canvas id="process_time_canvas"></canvas>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card pb-3">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">Queue Time</h4>
+                        </div>
+                        <canvas id="queue_time_canvas"></canvas>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card pb-3">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">Cycle Time</h4>
+                        </div>
+                        <canvas id="cycle_time_canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-8">
+            <form>
+                <div class="form-group">
+                    <label for="workstation">Workstation:</label>
+                    <select class="form-control" id="workstation">
+                        {% for workstation in workstations %}
+                        <option>{{ workstation }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
 
 
+
+    </div>
+{% endblock content %}
+
+
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+
+<!-- Map and graph code -->
+    <script type="text/javascript">
+        const labels = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        ];
+        const data = {
+            datasets: [{
+                label: 'Tag Positions',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [{
+                    x: -10,
+                    y: 0
+                  }, {
+                    x: 0,
+                    y: 10
+                  }, {
+                    x: 10,
+                    y: 5
+                  }, {
+                    x: 0.5,
+                    y: 5.5
+                }],
+            }]
+        };
+        var config = {
+            type: 'scatter',
+            data: data,
+            options: {
+                elements : {
+                    point: {
+                        radius: 10,
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false,
+                        type: 'linear',
+                        position: 'bottom',
+                        min: -26,
+                        max: 20.6
+                    },
+                    y: {
+                        display: false,
+                        type: 'linear',
+                        position: 'left',
+                        min: -10.4,
+                        max: 14.4
+                    }
+                }
+            }
+        };
+
+        var myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+
+
+
+        //bar chart
+        var config = {
+            type: 'scatter',
+            data: data,
+            options: {
+                scales: {
+                y: {
+                    beginAtZero: true
+                }
+                }
+            }
+        };
+        var mixedChart = new Chart(
+            document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                datasets: [{
+                    label: 'Witnessed',
+                    data: [15, 10, 5, 2, 23],
+                    // this dataset is drawn below
+                    yAxisID: 'leftAxis',
+                    order: 2
+                }, {
+                    label: 'Bottlenecks',
+                    data: [2, 40, 30, 69, 38],
+                    type: 'line',
+                    borderColor: 'rgb(80, 20, 69)',
+                    backgroundColor: 'rgb(120, 240, 89)',
+                    // this dataset is drawn on top
+                    yAxisID: 'rightAxis',
+                    order: 1
+                }],
+                labels: ['Button Defect', 'Pocket Defect', 'Collar Defect', 'Cuff Defect', 'Sleeve Defect']
+            },
+            options: {
+                scales: {
+                    /*
+                    y: {
+                    beginAtZero: true
+                    }
+                    */
+                    leftAxis: {
+                        id: 'A',
+                        type: 'linear',
+                        position: 'left',
+                    },
+                    rightAxis: {
+                        id: 'B',
+                        type: 'linear',
+                        position: 'right',
+                        //ticks: {
+                          //  max: 1,
+                            //min: 0
+                        //}
+                    }
+                }
+            }
+        });
+
+
+        //2nd bar chart
+        var mixedChart = new Chart(
+            document.getElementById('value_nonvalue'), {
+            type: 'bar',
+            data: {
+                datasets: [
+                {
+                    label: 'Non-Value',
+                    data: [18, 10],
+                    // this dataset is drawn below
+                    yAxisID: 'leftAxis',
+                    order: 2
+                }
+                , {
+                    label: 'Value',
+                    data: [69, 420],
+                    type: 'line',
+                    borderColor: 'rgb(80, 20, 69)',
+                    backgroundColor: 'rgb(120, 240, 89)',
+                    // this dataset is drawn on top
+                    yAxisID: 'rightAxis',
+                    order: 1
+                }
+                ],
+                labels: ['Value', 'Non-value']
+            },
+            options: {
+                scales: {
+                    /*
+                    y: {
+                    beginAtZero: true
+                    }
+                    */
+                    leftAxis: {
+                        id: 'A',
+                        type: 'linear',
+                        position: 'left',
+                    },
+                    rightAxis: {
+                        id: 'B',
+                        type: 'linear',
+                        position: 'right',
+                        //ticks: {
+                          //  max: 1,
+                            //min: 0
+                        //}
+                    }
+                }
+            }
+        });
+
+
+        // Process Time Gauge
+        var opts = {
+            angle: -0.2, // The span of the gauge arc
+            lineWidth: 0.2, // The line thickness
+            radiusScale: 1, // Relative radius
+            pointer: {
+                length: 0.6, // // Relative to gauge radius
+                strokeWidth: 0.035, // The thickness
+                color: '#000000' // Fill color
+            },
+            limitMax: 0,     // If false, max value increases automatically if value > maxValue
+            limitMin: 100,     // If true, the min value of the gauge will be fixed
+            colorStart: '#6F6EA0',   // Colors
+            colorStop: '#C0C0DB',    // just experiment with them
+            strokeColor: '#EEEEEE',  // to see which ones work best for you
+            generateGradient: true,
+            highDpiSupport: true,     // High resolution support
+            staticZones: [
+                {strokeStyle: "#F03E3E", min: 0, max: 30}, // Red from 100 to 130
+                {strokeStyle: "#FFDD00", min: 30, max: 60}, // Yellow
+                {strokeStyle: "#198754", min: 60, max: 100}, // Green
+            ],
+            staticLabels: {
+                font: "15px sans-serif",  // Specifies font
+                labels: [0, 30, 60, 100],  // Print labels at these values
+                color: "#000000",  // Optional: Label text color
+                fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+            }
+        };
+        var target = document.getElementById("process_time_canvas");
+        var gauge = new Gauge(target).setOptions(opts);
+        gauge.setMinValue(0);
+        gauge.maxValue = 100;
+        gauge.set({{ metrics.daily_pace_percent }});
+
+
+        // Queue Time Gauge
+        var opts = {
+            angle: -0.2, // The span of the gauge arc
+            lineWidth: 0.2, // The line thickness
+            radiusScale: 1, // Relative radius
+            pointer: {
+                length: 0.6, // // Relative to gauge radius
+                strokeWidth: 0.035, // The thickness
+                color: '#000000' // Fill color
+            },
+            limitMax: 0,     // If false, max value increases automatically if value > maxValue
+            limitMin: 100,     // If true, the min value of the gauge will be fixed
+            colorStart: '#6F6EA0',   // Colors
+            colorStop: '#C0C0DB',    // just experiment with them
+            strokeColor: '#EEEEEE',  // to see which ones work best for you
+            generateGradient: true,
+            highDpiSupport: true,     // High resolution support
+            staticZones: [
+                {strokeStyle: "#F03E3E", min: 0, max: 30}, // Red from 100 to 130
+                {strokeStyle: "#FFDD00", min: 30, max: 60}, // Yellow
+                {strokeStyle: "#198754", min: 60, max: 100}, // Green
+            ],
+            staticLabels: {
+                font: "15px sans-serif",  // Specifies font
+                labels: [0, 30, 60, 100],  // Print labels at these values
+                color: "#000000",  // Optional: Label text color
+                fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+            }
+        };
+        var target = document.getElementById("queue_time_canvas");
+        var gauge = new Gauge(target).setOptions(opts);
+        gauge.setMinValue(0);
+        gauge.maxValue = 100;
+        gauge.set({{ metrics.daily_pace_percent }});
+
+
+        // Cycle Time Gauge
+        var opts = {
+            angle: -0.2, // The span of the gauge arc
+            lineWidth: 0.2, // The line thickness
+            radiusScale: 1, // Relative radius
+            pointer: {
+                length: 0.6, // // Relative to gauge radius
+                strokeWidth: 0.035, // The thickness
+                color: '#000000' // Fill color
+            },
+            limitMax: 0,     // If false, max value increases automatically if value > maxValue
+            limitMin: 100,     // If true, the min value of the gauge will be fixed
+            colorStart: '#6F6EA0',   // Colors
+            colorStop: '#C0C0DB',    // just experiment with them
+            strokeColor: '#EEEEEE',  // to see which ones work best for you
+            generateGradient: true,
+            highDpiSupport: true,     // High resolution support
+            staticZones: [
+                {strokeStyle: "#F03E3E", min: 0, max: 30}, // Red from 100 to 130
+                {strokeStyle: "#FFDD00", min: 30, max: 60}, // Yellow
+                {strokeStyle: "#198754", min: 60, max: 100}, // Green
+            ],
+            staticLabels: {
+                font: "15px sans-serif",  // Specifies font
+                labels: [0, 30, 60, 100],  // Print labels at these values
+                color: "#000000",  // Optional: Label text color
+                fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+            }
+        };
+        var target = document.getElementById("cycle_time_canvas");
+        var gauge = new Gauge(target).setOptions(opts);
+        gauge.setMinValue(0);
+        gauge.maxValue = 100;
+        gauge.set({{ metrics.daily_pace_percent }});
+
+
+    </script>
+{% endblock scripts %}
+
+
+{% comment %} 
 {% block content %}
 <div class=row>
     <h1>IE</h1>
@@ -57,3 +417,5 @@
     </div>
 </div>
 {% endblock content %}
+
+ {% endcomment %}

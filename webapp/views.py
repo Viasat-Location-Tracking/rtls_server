@@ -83,7 +83,16 @@ def executive(request):
 
 # IE/CI Page
 def ie(request):
-    return render(request, 'webapp/ie.html')
+    context = {
+        "metrics": {
+            "daily_pace_percent": "85",
+            "units_sent_to_clinic": 5,
+            "yield": "80%",
+            "on_time_delivery": "85%",
+            "perc_on_takt" : "71%"
+        }
+    }
+    return render(request, 'webapp/ie.html', context)
 
 # Tag Assignment Page
 def tagAssign(request):
