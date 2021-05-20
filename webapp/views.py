@@ -60,6 +60,10 @@ def mainline(request):
     }
     return render(request, 'webapp/mainline.html', context)
 
+# Homepage
+def index(request):
+    return redirect(reverse('webapp:mainline'))
+
 # Clinic Page
 def clinic(request):
     return render(request, 'webapp/clinic.html')
@@ -116,6 +120,7 @@ def tagAssign(request):
     }
     return render(request, 'webapp/tagAssign.html', context_tag)
 
+# Tag Assignment Updater
 def insert_tagAssign(request):
     newTag = Tag(tag_id = request.POST['tagID_TB'], serial_num = request.POST['SN_TB'], valid_after = request.POST['time_TB'])
     #content = request.POST['tagID_TB', 'SN_TB', 'time_TB']
@@ -124,8 +129,39 @@ def insert_tagAssign(request):
     return redirect('/tagAssign')
     #return render(request, 'webapp/manager.html')
 
-def index(request):
-    return redirect(reverse('webapp:mainline'))
+# Clinic Table Updater
+def update_clinic_table(request):
+    operation = request.POST['operation'] if request.POST['operation'] else None
+
+    if operation == None:
+        return HttpResponseBadRequest("Missing 'operation' parameter")
+
+    if operation == "add":
+        try:
+            serial_num = request.POST['serial_num']
+            from_zone = request.POST['workstation']
+            problem = request.POST['problem']
+        except AttributeError:
+            return HttpResponseBadRequest("Missing parameter")
+
+        # Get tag id corresponding with submitted serial number (works similarly to add_serial_numbers() below)
+        tag_id = Tag.objects.filter(
+            #valid_after__lte = datetime.datetime.now(),
+            #valid_before__gte = datetime.datetime.now(),
+            serial_num = serial_num,
+        ).first().tag_id
+
+        # Create new table row
+        clinic_item = ClinicItem(
+            tag_id = tag_id,
+            serial_num = serial_num,
+            added_to_clinic = datetime.datetime.now(),
+            from_zone = [from_zone], # from_zone in models.py is an ArrayField, so we have to pass an array
+            problem = problem,
+        )
+        clinic_item.save()
+
+    return HttpResponse('Serial number %s added to clinic.' % serial_num)
 
 # Returns JSON-formatted request_types and other data in response to AJAX requests
 def data(request):
@@ -181,7 +217,6 @@ def data(request):
 
     # If nothing matched, abort
     return HttpResponseBadRequest("Invalid request")
-
 
 # Helper function to match serial numbers and tags
 def add_serial_numbers(units, *columns_to_keep):

@@ -93,9 +93,9 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <button class="btn btn-primary text-center" data-bs-toggle="modal" data-bs-target="#clinicFormModal">Send Unit to Clinic</button>
+                        <button class="btn btn-primary text-center" data-bs-toggle="modal" data-bs-target="#clinic-form-modal">Send Unit to Clinic</button>
                         <!-- Clinic Form Modal -->
-                        <div class="modal fade" id="clinicFormModal" tabindex="-1">
+                        <div class="modal fade" id="clinic-form-modal" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -103,18 +103,21 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="get" id="clinicForm">
+                                        <form action="{% url 'webapp:updateClinicTable' %}" method="post" name="clinic-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="operation" value="add" /> <!-- This form adds items to the clinic table -->
+                                            <input type="hidden" name="workstation" value="" /> <!-- Value is set in submitClinicForm() -->
                                             <div class="mb-3">
                                                 <label for="serial" class="form-label">Serial Number</label>
-                                                <select class="form-control" id="clinic-form-serial">
+                                                <select class="form-control" id="clinic-form-serial" name="serial_num"> <!-- See updateUnitsPresentInModal().-->
                                                 {% for unit in units_present %}
                                                     <option>{{ unit.serial }}</option>
                                                 {% endfor %}
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="prob-description" class="form-label">What's Wrong?</label>
-                                                <textarea class="form-control" id="prob-description"></textarea>
+                                                <label for="problem" class="form-label">What's Wrong?</label>
+                                                <textarea class="form-control" name="problem"></textarea>
                                             </div>
                                         </form>
                                     </div>
@@ -263,7 +266,8 @@
 
         // Clinic Form
         function submitClinicForm() {
-            document.getElementById("clinicForm").submit();
+            document.forms['clinic-form']['workstation'].value = $("#workstation").val();
+            document.forms['clinic-form'].submit();
         }
 
         // ********** AJAX UPDATERS *********** //
@@ -312,6 +316,20 @@
                         var row = "<tr><td>" + response.data[i].serial_num + "</td><td>" + response.data[i].tag_id + "</td></tr>";
                         units_present_table_body.append(row);
                     }
+                }
+            });
+        }
+
+        function updateUnitsPresentInModal() {
+            $.ajax({
+                url: "{% url 'webapp:data' %}",
+                data: {
+                    'workstation': $("#workstation").val(),
+                    'request_type': 'units_present',
+                },
+
+                success: (response) => {
+                    var units_present_table_body = $("#units-present-table tbody");
 
                     // Delete all items out of clinic form
                     clinic_form_tag_list = $("#clinic-form-serial");
@@ -324,6 +342,7 @@
                     }
                 }
             });
+            
         }
 
         function updateUnitsSentToClinic() {
@@ -347,11 +366,18 @@
             setInterval(updateUnitsSentToClinic, 10000);
         });
 
-        // Event listeners
+        // ********** AJAX UPDATERS *********** //
+
+        // Workstation dropdown changed
         $("#workstation").change(() => {
             updateUnitsPresent();
             updateUnitsSentToClinic();
         })
+
+        // "Send tag to clinic" modal opened
+        $("#clinic-form-modal").on('show.bs.modal', () => {
+            updateUnitsPresentInModal();
+        });
     </script>
 
 {% endblock scripts %}
