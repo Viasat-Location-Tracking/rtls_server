@@ -152,5 +152,5 @@ CHANNEL_LAYERS = {
 ##### CUSTOM WEBAPP SETTINGS BELOW #####
 
 # How far back to look (in seconds) to determine where a tag is currently located
-CURRENT_POSITION_LOOKBACK = 800000
+CURRENT_POSITION_LOOKBACK = 1
 POSTGRES_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
