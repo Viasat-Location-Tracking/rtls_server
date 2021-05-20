@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 class DataPoint(models.Model):
     tag_id = models.CharField(max_length=150)
     timestamp = models.DateTimeField()
-    zone = ArrayField(models.CharField(max_length=150))
+    zone = ArrayField(models.CharField(max_length=150, null=True))
     x_pos = models.DecimalField(decimal_places=2, max_digits=4)
     y_pos = models.DecimalField(decimal_places=2, max_digits=4)
     button_pushed = models.BooleanField()
