@@ -11,7 +11,7 @@ class DataPoint(models.Model):
     button_pushed = models.BooleanField()
 
     def __str__(self):
-        return "Tag %d at %s" % (self.tag_id, self.timestamp)
+        return "Tag %s at %s" % (self.tag_id, self.timestamp)
 
 class Tag(models.Model):
     tag_id = models.CharField(max_length=50)
@@ -21,7 +21,7 @@ class Tag(models.Model):
     valid_before = models.DateTimeField(null=True)
 
     def __str__(self):
-        return "Tag %d, serial number %s" % (self.tag_id, self.serial_num)
+        return "Tag %s, serial number %s" % (self.tag_id, self.serial_num)
 
 class ClinicItem(models.Model):
     tag_id = models.CharField(max_length=150)
@@ -32,4 +32,4 @@ class ClinicItem(models.Model):
     problem = models.CharField(max_length=1000)
 
     def __str__(self):
-        return "Tag %d, serial number %s" % (self.tag_id, self.serial_num)
+        return "Tag %s, serial number %s" % (self.tag_id, self.serial_num)
