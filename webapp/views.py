@@ -11,14 +11,13 @@ import json
 
 # Mainline Page
 def mainline(request):
-    data_point_objects = DataPoint.objects.all()
     context = {
         "workstations": [
             "Workstation 1A",
             "Workstation 1B",
             "Workstation 2",
+            "Rework",
         ],
-        "data_point_objects": data_point_objects,
         "move_transactions": [
             {
                 "name": "Tag 1",
@@ -40,9 +39,6 @@ def mainline(request):
             "daily_pace_percent": "85",
             "units_sent_to_clinic": 5,
             "yield": "80%",
-            "on_time_delivery": "85%",
-            "perc_on_takt" : "71%"
-
         },
         "units_present": [
             {
