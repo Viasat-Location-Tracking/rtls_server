@@ -1,13 +1,12 @@
-from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
-from django.contrib import messages
+from django.forms.models import model_to_dict
 
 from .models import DataPoint, Tag, ClinicItem
 
 import datetime
-import json
 
 # Mainline Page
 def mainline(request):
@@ -68,9 +67,9 @@ def clinic(request):
     }
     clinic_items = ClinicItem.objects.all()
     for item in clinic_items:
-        context["clinic_items"].append(item);
+       context["clinic_items"].append(item)
         
-    return render(request, 'webapp/clinic.html')
+    return render(request, 'webapp/clinic.html', context)
 
 # Manager Page
 def manager(request):

@@ -1,9 +1,6 @@
 {% extends 'webapp/base.html' %}
 {% load static %}
 
-{% extends 'webapp/base.html' %}
-{% load static %}
-
 {% block content %}
 <div class="table-responsive">
     <table id = 'clinic-table' class="table table-striped table-sm table-bordered my-3">
@@ -12,26 +9,25 @@
             <th class="text-center" colspan="8">Tag Malfunctions</th>
         </tr>
         <tr>
-            <th style="width:60%">Tag Name</th>
-            <th style="width:40%">Date/Time Assigned</th>
-            <th style="width:60%">Date/Time Entered</th>
-            <th style="width:60%">Origin Workstation</th>
-            <th style="width:60%">Nonconforming Description</th>
-            <th style="width:60%">Date/Time Resolved</th>
-            <th style="width:60%">Date/Time Left Clinic</th>
-            <th style="width:60%">Resolved</th>
+            <th style="width:20%">Tag Name</th>
+            <th style="width:20%">Date/Time Entered</th>
+            <th style="width:20%">Origin Workstation</th>
+            <th style="width:40%">Nonconforming Description</th>
+            <th style="width:20%">Date/Time Resolved</th>
+            <th style="width:20%">Resolved</th>
         </tr>
         </thead>
         <tbody>
         {% for item in clinic_items %}
         <tr>
-            <td>
-                <a id = 'tag name'>item.tag_id</a>
-                <a id = 'date/time assigned'>item.valid_after__lte</a>
-                <a id = 'date/time entered'>item.valid_before__gte</a>
-                <a id = 'workstation'>item.from_zone</a>
-                <a id = 'description'>item.problem</a>
-                <a id = 'delete_row' class="btn btn-sm btn-success">Resolve</a>
+            <td id='tag_id'>{{ item.tag_id }}</td>
+            <td id = 'date/time entered'>{{ item.added_to_clinic }}</td>
+            <td id = 'workstation'>{{ item.from_zone.0 }}</td>
+            <td id = 'description'>{{ item.problem }}</td>
+            <td id = 'date/time resolved'>{{ item.removed_from_clinic }}</td>
+            <td id = 'delete_row'>
+                <button type ="button" class ="btn btn-sm btn-success">Resolve</button>
+            </td>
             </td>
         </tr>
         {% endfor %}
