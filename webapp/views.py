@@ -1,7 +1,8 @@
-from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
+from django.contrib import messages
 
 from .models import DataPoint, Tag, ClinicItem
 
@@ -161,7 +162,7 @@ def update_clinic_table(request):
         )
         clinic_item.save()
 
-    return HttpResponse('Serial number %s added to clinic.' % serial_num)
+    return HttpResponseRedirect(reverse('webapp:index'))
 
 # Returns JSON-formatted request_types and other data in response to AJAX requests
 def data(request):

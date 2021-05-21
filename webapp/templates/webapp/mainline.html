@@ -356,7 +356,7 @@
                 success: (response) => {
                     $("#units-sent-to-clinic").text(response.data);
                 }
-            })
+            });
         }
 
         // Start running the updaters
@@ -372,7 +372,7 @@
         $("#workstation").change(() => {
             updateUnitsPresent();
             updateUnitsSentToClinic();
-        })
+        });
 
         // "Send tag to clinic" modal opened
         $("#clinic-form-modal").on('show.bs.modal', () => {
