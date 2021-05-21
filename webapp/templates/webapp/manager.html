@@ -108,28 +108,59 @@
                     }
                 },
                 scales: {
-                    x: {
+                   x: {
                         display: false,
                         type: 'linear',
                         position: 'bottom',
-                        min: -26,
-                        max: 20.6
+                        min: -7.92,
+                        max: 6.28
                     },
                     y: {
                         display: false,
                         type: 'linear',
                         position: 'left',
-                        min: -10.4,
-                        max: 14.4
+                        min: -3.17,
+                        max: 4.39
                     }
                 }
             }
         };
 
-        var myChart = new Chart(
+        var map = new Chart(
             document.getElementById('myChart'),
             config
         );
+
+        // ********** AJAX UPDATERS *********** //
+
+        // Map
+        function updateMap() {
+            $.ajax({
+                url: "{% url 'webapp:data' %}",
+                data: {
+                    'request_type': 'map_data',
+                },
+                success: (response) => {
+                    // Clear out old data
+                    map.data.datasets[0].data = [];
+
+                    // Feed in new map data
+                    for (var i in response.data) {
+                        map.data.datasets[0].data.push({
+                            'x': response.data[i]['x_pos'],
+                            'y': response.data[i]['y_pos']
+                        })
+                    }
+
+                    map.update();
+                }
+            });
+        }
+
+        // Start running the updaters
+        $(document).ready(() => {
+            setInterval(updateMap, 125);
+        });
 
 
 

@@ -208,14 +208,14 @@
                 },
                 scales: {
                     x: {
-                        display: true,
+                        display: false,
                         type: 'linear',
                         position: 'bottom',
                         min: -7.92,
                         max: 6.28
                     },
                     y: {
-                        display: true,
+                        display: false,
                         type: 'linear',
                         position: 'left',
                         min: -3.17,
@@ -297,6 +297,9 @@
 
                     // Close the clinic form
                     $("#clinic-form-modal").modal('hide');
+
+                    // Update units-sent-to-clinic count
+                    updateUnitsSentToClinic();
 
                     // Show a confirmation that the unit was added to the clinic
                     // TODO: the close button looks like crap and also doesn't work for some reason, even though it's copied straight from Boostrap's example.
@@ -401,6 +404,7 @@
 
         // Start running the updaters
         $(document).ready(() => {
+            updateUnitsSentToClinic();
             setInterval(updateMap, 125);
             setInterval(updateUnitsPresent, 1000);
             setInterval(updateUnitsSentToClinic, 10000);

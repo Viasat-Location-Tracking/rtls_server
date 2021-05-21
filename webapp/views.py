@@ -37,7 +37,7 @@ def mainline(request):
         ],
         "metrics": {
             "daily_pace_percent": "85",
-            "units_sent_to_clinic": 5,
+            "units_sent_to_clinic": '',
             "yield": "80%",
         },
         "units_present": [
@@ -225,8 +225,8 @@ def add_serial_numbers(units, *columns_to_keep):
     serial_nums = []
     for unit in units:
         tag_assignment = Tag.objects.filter(
-            valid_after__lte = unit.timestamp,
-            valid_before__gte = unit.timestamp,
+            #valid_after__lte = unit.timestamp,
+            #valid_before__gte = unit.timestamp,
             tag_id = unit.tag_id
         )
         try:
