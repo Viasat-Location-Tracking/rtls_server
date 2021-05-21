@@ -17,17 +17,17 @@
             {% comment %} <div class = "col-5">
                 <canvas id= "myChart"></canvas>
             </div> {% endcomment %}
-            <div class = "col-3">
+            <div class = "col-4">
                 <canvas id="barChart"></canvas>
             </div>
-            <div class = "col-3">
+            <div class = "col-4">
                 <canvas id="value_nonvalue"></canvas>
             </div>
         </div>
 
         <div class="col-8">
             <div class="row">
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card pb-3">
                         <div class="card-body">
                             <h4 class="card-title text-center">Process Time</h4>
@@ -35,7 +35,7 @@
                         <canvas id="process_time_canvas"></canvas>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card pb-3">
                         <div class="card-body">
                             <h4 class="card-title text-center">Queue Time</h4>
@@ -43,7 +43,7 @@
                         <canvas id="queue_time_canvas"></canvas>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card pb-3">
                         <div class="card-body">
                             <h4 class="card-title text-center">Cycle Time</h4>
@@ -58,6 +58,16 @@
             <form>
                 <div class="form-group">
                     <label for="workstation">Workstation:</label>
+                    <select class="form-control" id="workstation">
+                        {% for workstation in workstations %}
+                        <option>{{ workstation }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+            <form>
+                <div class="form-group">
+                    <label for="workstation">Timeframe:</label>
                     <select class="form-control" id="workstation">
                         {% for workstation in workstations %}
                         <option>{{ workstation }}</option>
