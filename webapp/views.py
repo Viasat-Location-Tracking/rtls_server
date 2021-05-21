@@ -63,6 +63,13 @@ def index(request):
 
 # Clinic Page
 def clinic(request):
+    context = {
+        "clinic_items": [],
+    }
+    clinic_items = ClinicItem.objects.all()
+    for item in clinic_items:
+        context["clinic_items"].append(item);
+        
     return render(request, 'webapp/clinic.html')
 
 # Manager Page
