@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
@@ -124,7 +124,7 @@ def tagAssign(request):
 
 # Tag Assignment Updater
 def insert_tagAssign(request):
-    newTag = Tag(tag_id = request.POST['tagID_TB'], serial_num = request.POST['SN_TB'], valid_after = request.POST['time_TB'])
+    newTag = Tag(tag_id = request.POST['tagID_TB'], tag_name = request.POST['tagName_TB'], serial_num = request.POST['SN_TB'], valid_after = request.POST['time_TB'])
     #content = request.POST['tagID_TB', 'SN_TB', 'time_TB']
     #newTag = Tag(content)
     newTag.save()
@@ -147,11 +147,14 @@ def update_clinic_table(request):
             return HttpResponseBadRequest("Missing parameter")
 
         # Get tag id corresponding with submitted serial number (works similarly to add_serial_numbers() below)
-        tag_id = Tag.objects.filter(
-            valid_after__lte = datetime.datetime.now(),
-            valid_before__gte = datetime.datetime.now(),
-            serial_num = serial_num,
-        ).first().tag_id
+        try:
+            tag_id = Tag.objects.filter(
+                valid_after__lte = datetime.datetime.now(),
+                #valid_before__gte = datetime.datetime.now(), # Commented out for demo because the query returns nothing when valid_before is null.
+                serial_num = serial_num,
+            ).first().tag_id
+        except AttributeError:
+            return HttpResponseServerError("No tag assigned to serial number %s" % serial_num)
 
         # Create new table row
         clinic_item = ClinicItem(

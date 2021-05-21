@@ -21,8 +21,14 @@
         </div>
         <div class="row">
             <div class="form-group">
-            <label for="tagID_TB" class="sr-only">Tag ID</label>
-            <input type="text" name="tagID_TB" class="form-control" id="tagID_TB" placeholder="1234">
+            <label for="tagID_TB" class="sr-only">Tag ID (MAC Address)</label>
+            <input type="text" name="tagID_TB" class="form-control" id="tagID_TB" placeholder="a43b5c3d5d43">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+            <label for="tagName_TB" class="sr-only">Tag Name</label>
+            <input type="text" name="tagName_TB" class="form-control" id="tagName_TB" placeholder="25">
             </div>
         </div>
         <div class="row">
@@ -48,6 +54,7 @@
         <thead>
             <tr>
                 <th>Tag ID</th>
+                <th>Tag Name</th>
                 <th>Serial Number</th>
                 <th>Remove</th>
             </tr>
@@ -56,6 +63,7 @@
             {% for unit in tag_point_objects %}
             <tr>
                 <td>{{unit.tag_id}}</td>
+                <td>{{unit.tag_name}}</td>
                 <td>{{unit.serial_num}}</td>
                 <td>
                     <a class="btn btn-sm btn-success">Remove</a>
