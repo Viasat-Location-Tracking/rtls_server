@@ -138,7 +138,7 @@
                     <!-- Units Sent to Clinic -->
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h6 class="card-title text-center">Units Sent to Clinic</h6>
+                            <h6 class="card-title text-center">Units Sent to Clinic (last 8 hours)</h6>
                             <p class="card-text text-center fs-1" id="units-sent-to-clinic">{{ metrics.units_sent_to_clinic }}</p>
                         </div>
                     </div>
@@ -394,7 +394,7 @@
                 data: {
                     'workstation': $("#workstation").val(),
                     'request_type': 'units_sent_to_clinic',
-                    'hours_ago': 8
+                    'hours_ago': 8  
                 },
                 success: (response) => {
                     $("#units-sent-to-clinic").text(response.data);
