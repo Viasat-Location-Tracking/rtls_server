@@ -16,6 +16,7 @@
 {% endblock head %}
 
 {% block content %}
+    <div class="alert-root"></div>
     <div class="container">
         <div class="row">
             <!-- Map -->
@@ -103,7 +104,8 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{% url 'webapp:updateClinicTable' %}" method="post" name="clinic-form">
+                                        <!-- NOTE: This form does not get submitted like a regular form. It uses AJAX to avoid reloading the whole page. -->
+                                        <form action="#" method="post" name="clinic-form">
                                             {% csrf_token %}
                                             <input type="hidden" name="operation" value="add" /> <!-- This form adds items to the clinic table -->
                                             <input type="hidden" name="workstation" value="" /> <!-- Value is set in submitClinicForm() -->
@@ -265,9 +267,47 @@
         gauge.set({{ metrics.daily_pace_percent }});
 
         // Clinic Form
+        // First, a helper function to get Django's CSRF token so that we can send a POST request without getting a 403 error.
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // And now for the actual form submit function
         function submitClinicForm() {
-            document.forms['clinic-form']['workstation'].value = $("#workstation").val();
-            document.forms['clinic-form'].submit();
+            let workstation = $("#workstation").val();
+            let operation = document.forms['clinic-form']['operation'].value;
+            let serial_num = document.forms['clinic-form']['serial_num'].value;
+            let problem = document.forms['clinic-form']['problem'].value;
+
+            $.ajax({
+                url: "{% url 'webapp:updateClinicTable' %}",
+                method: 'POST',
+                data: {
+                    'workstation': workstation,
+                    'operation': operation,
+                    'serial_num': serial_num,
+                    'problem': problem,
+                    'csrfmiddlewaretoken': getCookie('csrftoken'),
+
+                },
+                success: (response) => {
+                    console.log("got response");
+
+                    // Close the clinic form
+                    $("#clinic-form-modal").modal('hide');
+
+                    // Show a confirmation that the unit was added to the clinic
+                    // TODO: the close button looks like crap and also doesn't work for some reason, even though it's copied straight from Boostrap's example.
+                    //$(".alert-root").append(
+                    //    '<div class="alert alert-success alert-dismissible fade show" role="alert">' 
+                    //      + '<p>' + response.data.message + '</p>' 
+                    //      + '<button type="button" class="close" data-dismiss="alert">&times;</button>' 
+                    //    +'</div>'
+                    //);
+                }
+            });
         }
 
         // ********** AJAX UPDATERS *********** //
@@ -365,8 +405,6 @@
             setInterval(updateUnitsPresent, 1000);
             setInterval(updateUnitsSentToClinic, 10000);
         });
-
-        // ********** AJAX UPDATERS *********** //
 
         // Workstation dropdown changed
         $("#workstation").change(() => {

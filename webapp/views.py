@@ -161,8 +161,12 @@ def update_clinic_table(request):
             problem = problem,
         )
         clinic_item.save()
-
-    return HttpResponseRedirect(reverse('webapp:index'))
+    
+    return JsonResponse({
+        'data': {
+            'message': 'Serial number %s successfully added to clinic.' % clinic_item.serial_num,
+        }
+    })
 
 # Returns JSON-formatted request_types and other data in response to AJAX requests
 def data(request):
