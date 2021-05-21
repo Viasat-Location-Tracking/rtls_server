@@ -143,8 +143,8 @@ def update_clinic_table(request):
 
         # Get tag id corresponding with submitted serial number (works similarly to add_serial_numbers() below)
         tag_id = Tag.objects.filter(
-            #valid_after__lte = datetime.datetime.now(),
-            #valid_before__gte = datetime.datetime.now(),
+            valid_after__lte = datetime.datetime.now(),
+            valid_before__gte = datetime.datetime.now(),
             serial_num = serial_num,
         ).first().tag_id
 
