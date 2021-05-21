@@ -79,9 +79,8 @@ def manager(request):
 def executive(request):
     context = {
         "metrics": {
-            "daily_pace_percent": "85",
-            "units_sent_to_clinic": 5,
-            "yield": "80%",
+            "avg_time_prob_solution": "8.2 hrs",
+            "prob_freq": "2%",
             "on_time_delivery": "85%",
             "perc_on_takt" : "71%"
         }
