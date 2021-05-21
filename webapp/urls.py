@@ -11,5 +11,6 @@ urlpatterns = [
     path('ie', views.ie, name='ie'),
     path('tagAssign', views.tagAssign, name = 'tagAssign'),
     path('insert_tagAssign', views.insert_tagAssign, name = 'insert_tagAssign'),
-    path('data', views.data, name='data') # used for returning metrics and other data via AJAX requests on the browser side
+    path('data', views.data, name='data'), # used for returning metrics and other data via AJAX requests on the browser side
+    path('updateClinicTable', views.update_clinic_table, name='updateClinicTable')
 ]

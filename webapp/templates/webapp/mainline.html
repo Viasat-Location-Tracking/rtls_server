@@ -16,6 +16,7 @@
 {% endblock head %}
 
 {% block content %}
+    <div class="alert-root"></div>
     <div class="container">
         <div class="row">
             <!-- Map -->
@@ -93,9 +94,9 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <button class="btn btn-primary text-center" data-bs-toggle="modal" data-bs-target="#clinicFormModal">Send Unit to Clinic</button>
+                        <button class="btn btn-primary text-center" data-bs-toggle="modal" data-bs-target="#clinic-form-modal">Send Unit to Clinic</button>
                         <!-- Clinic Form Modal -->
-                        <div class="modal fade" id="clinicFormModal" tabindex="-1">
+                        <div class="modal fade" id="clinic-form-modal" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -103,18 +104,22 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="get" id="clinicForm">
+                                        <!-- NOTE: This form does not get submitted like a regular form. It uses AJAX to avoid reloading the whole page. -->
+                                        <form action="#" method="post" name="clinic-form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="operation" value="add" /> <!-- This form adds items to the clinic table -->
+                                            <input type="hidden" name="workstation" value="" /> <!-- Value is set in submitClinicForm() -->
                                             <div class="mb-3">
                                                 <label for="serial" class="form-label">Serial Number</label>
-                                                <select class="form-control" id="clinic-form-serial">
+                                                <select class="form-control" id="clinic-form-serial" name="serial_num"> <!-- See updateUnitsPresentInModal().-->
                                                 {% for unit in units_present %}
                                                     <option>{{ unit.serial }}</option>
                                                 {% endfor %}
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="prob-description" class="form-label">What's Wrong?</label>
-                                                <textarea class="form-control" id="prob-description"></textarea>
+                                                <label for="problem" class="form-label">What's Wrong?</label>
+                                                <textarea class="form-control" name="problem"></textarea>
                                             </div>
                                         </form>
                                     </div>
@@ -206,15 +211,15 @@
                         display: false,
                         type: 'linear',
                         position: 'bottom',
-                        min: -26,
-                        max: 20.6
+                        min: -7.92,
+                        max: 6.28
                     },
                     y: {
                         display: false,
                         type: 'linear',
                         position: 'left',
-                        min: -10.4,
-                        max: 14.4
+                        min: -3.17,
+                        max: 4.39
                     }
                 }
             }
@@ -262,8 +267,50 @@
         gauge.set({{ metrics.daily_pace_percent }});
 
         // Clinic Form
+        // First, a helper function to get Django's CSRF token so that we can send a POST request without getting a 403 error.
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // And now for the actual form submit function
         function submitClinicForm() {
-            document.getElementById("clinicForm").submit();
+            let workstation = $("#workstation").val();
+            let operation = document.forms['clinic-form']['operation'].value;
+            let serial_num = document.forms['clinic-form']['serial_num'].value;
+            let problem = document.forms['clinic-form']['problem'].value;
+
+            $.ajax({
+                url: "{% url 'webapp:updateClinicTable' %}",
+                method: 'POST',
+                data: {
+                    'workstation': workstation,
+                    'operation': operation,
+                    'serial_num': serial_num,
+                    'problem': problem,
+                    'csrfmiddlewaretoken': getCookie('csrftoken'),
+
+                },
+                success: (response) => {
+                    console.log("got response");
+
+                    // Close the clinic form
+                    $("#clinic-form-modal").modal('hide');
+
+                    // Update units-sent-to-clinic count
+                    updateUnitsSentToClinic();
+
+                    // Show a confirmation that the unit was added to the clinic
+                    // TODO: the close button looks like crap and also doesn't work for some reason, even though it's copied straight from Boostrap's example.
+                    //$(".alert-root").append(
+                    //    '<div class="alert alert-success alert-dismissible fade show" role="alert">' 
+                    //      + '<p>' + response.data.message + '</p>' 
+                    //      + '<button type="button" class="close" data-dismiss="alert">&times;</button>' 
+                    //    +'</div>'
+                    //);
+                }
+            });
         }
 
         // ********** AJAX UPDATERS *********** //
@@ -312,6 +359,20 @@
                         var row = "<tr><td>" + response.data[i].serial_num + "</td><td>" + response.data[i].tag_id + "</td></tr>";
                         units_present_table_body.append(row);
                     }
+                }
+            });
+        }
+
+        function updateUnitsPresentInModal() {
+            $.ajax({
+                url: "{% url 'webapp:data' %}",
+                data: {
+                    'workstation': $("#workstation").val(),
+                    'request_type': 'units_present',
+                },
+
+                success: (response) => {
+                    var units_present_table_body = $("#units-present-table tbody");
 
                     // Delete all items out of clinic form
                     clinic_form_tag_list = $("#clinic-form-serial");
@@ -324,6 +385,7 @@
                     }
                 }
             });
+            
         }
 
         function updateUnitsSentToClinic() {
@@ -335,23 +397,29 @@
                     'hours_ago': 8
                 },
                 success: (response) => {
-                    $("#units-sent-to-clinic").innerHTML(response.data);
+                    $("#units-sent-to-clinic").text(response.data);
                 }
-            })
+            });
         }
 
         // Start running the updaters
         $(document).ready(() => {
-            setInterval(updateMap, 250);
+            updateUnitsSentToClinic();
+            setInterval(updateMap, 125);
             setInterval(updateUnitsPresent, 1000);
             setInterval(updateUnitsSentToClinic, 10000);
         });
 
-        // Event listeners
+        // Workstation dropdown changed
         $("#workstation").change(() => {
             updateUnitsPresent();
             updateUnitsSentToClinic();
-        })
+        });
+
+        // "Send tag to clinic" modal opened
+        $("#clinic-form-modal").on('show.bs.modal', () => {
+            updateUnitsPresentInModal();
+        });
     </script>
 
 {% endblock scripts %}

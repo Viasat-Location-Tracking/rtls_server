@@ -1,7 +1,8 @@
-from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
+from django.contrib import messages
 
 from .models import DataPoint, Tag, ClinicItem
 
@@ -10,14 +11,13 @@ import json
 
 # Mainline Page
 def mainline(request):
-    data_point_objects = DataPoint.objects.all()
     context = {
         "workstations": [
             "Workstation 1A",
             "Workstation 1B",
             "Workstation 2",
+            "Rework",
         ],
-        "data_point_objects": data_point_objects,
         "move_transactions": [
             {
                 "name": "Tag 1",
@@ -37,11 +37,8 @@ def mainline(request):
         ],
         "metrics": {
             "daily_pace_percent": "85",
-            "units_sent_to_clinic": 5,
+            "units_sent_to_clinic": '',
             "yield": "80%",
-            "on_time_delivery": "85%",
-            "perc_on_takt" : "71%"
-
         },
         "units_present": [
             {
@@ -60,8 +57,19 @@ def mainline(request):
     }
     return render(request, 'webapp/mainline.html', context)
 
+# Homepage
+def index(request):
+    return redirect(reverse('webapp:mainline'))
+
 # Clinic Page
 def clinic(request):
+    context = {
+        "clinic_items": [],
+    }
+    clinic_items = ClinicItem.objects.all()
+    for item in clinic_items:
+        context["clinic_items"].append(item);
+        
     return render(request, 'webapp/clinic.html')
 
 # Manager Page
@@ -82,7 +90,16 @@ def executive(request):
 
 # IE/CI Page
 def ie(request):
-    return render(request, 'webapp/ie.html')
+    context = {
+        "metrics": {
+            "daily_pace_percent": "85",
+            "units_sent_to_clinic": 5,
+            "yield": "80%",
+            "on_time_delivery": "85%",
+            "perc_on_takt" : "71%"
+        }
+    }
+    return render(request, 'webapp/ie.html', context)
 
 # Tag Assignment Page
 def tagAssign(request):
@@ -106,6 +123,7 @@ def tagAssign(request):
     }
     return render(request, 'webapp/tagAssign.html', context_tag)
 
+# Tag Assignment Updater
 def insert_tagAssign(request):
     newTag = Tag(tag_id = request.POST['tagID_TB'], serial_num = request.POST['SN_TB'], valid_after = request.POST['time_TB'])
     #content = request.POST['tagID_TB', 'SN_TB', 'time_TB']
@@ -114,8 +132,43 @@ def insert_tagAssign(request):
     return redirect('/tagAssign')
     #return render(request, 'webapp/manager.html')
 
-def index(request):
-    return redirect(reverse('webapp:mainline'))
+# Clinic Table Updater
+def update_clinic_table(request):
+    operation = request.POST['operation'] if request.POST['operation'] else None
+
+    if operation == None:
+        return HttpResponseBadRequest("Missing 'operation' parameter")
+
+    if operation == "add":
+        try:
+            serial_num = request.POST['serial_num']
+            from_zone = request.POST['workstation']
+            problem = request.POST['problem']
+        except AttributeError:
+            return HttpResponseBadRequest("Missing parameter")
+
+        # Get tag id corresponding with submitted serial number (works similarly to add_serial_numbers() below)
+        tag_id = Tag.objects.filter(
+            valid_after__lte = datetime.datetime.now(),
+            valid_before__gte = datetime.datetime.now(),
+            serial_num = serial_num,
+        ).first().tag_id
+
+        # Create new table row
+        clinic_item = ClinicItem(
+            tag_id = tag_id,
+            serial_num = serial_num,
+            added_to_clinic = datetime.datetime.now(),
+            from_zone = [from_zone], # from_zone in models.py is an ArrayField, so we have to pass an array
+            problem = problem,
+        )
+        clinic_item.save()
+    
+    return JsonResponse({
+        'data': {
+            'message': 'Serial number %s successfully added to clinic.' % clinic_item.serial_num,
+        }
+    })
 
 # Returns JSON-formatted request_types and other data in response to AJAX requests
 def data(request):
@@ -172,15 +225,14 @@ def data(request):
     # If nothing matched, abort
     return HttpResponseBadRequest("Invalid request")
 
-
 # Helper function to match serial numbers and tags
 def add_serial_numbers(units, *columns_to_keep):
     # Find the related serial number for each tag_id in the retrieved dataset. Must be current.
     serial_nums = []
     for unit in units:
         tag_assignment = Tag.objects.filter(
-            valid_after__lte = unit.timestamp,
-            valid_before__gte = unit.timestamp,
+            #valid_after__lte = unit.timestamp,
+            #valid_before__gte = unit.timestamp,
             tag_id = unit.tag_id
         )
         try:
