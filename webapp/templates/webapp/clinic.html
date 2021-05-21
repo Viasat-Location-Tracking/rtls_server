@@ -2,53 +2,38 @@
 {% load static %}
 
 {% block content %}
-    <h1>Clinic</h1>
-
-<div id="left">
-    <h3 id=add>Add An Issue</h3>
-    < class="input">
-        Name: <input type="text" name="TagID"><br>
-        Date/Time Assigned: <input type="datetime-local" name="Date/Time Assigned"><br>
-        Date/Time Entered: <input type="datetime-local" name="Date/Time Entered"><br>
-        Origin Workstation: <input type="text" name="Origin Workstation"><br>
-        Description: <input type="text" name="Description"><br>
-        Date/Time Resolved: <input type="datetime-local" name="Date/Time Resolved"><br>
-        Date/Time Left Clinic: <input type="datetime-local" name="Date/Time Left Clinic"><br>
-        <input type="button" value="Add" id="submit" />
-    </form>
-</div>
-
 <div class="table-responsive">
-<table class="table table-striped table-bordered align-middle">
-    <thead class="thead-dark">
-    <thead>
-    <tr>
-        <th scope="col">tag id</th>
-        <th scope="col">Date/Time Assigned</th>
-        <th scope="col">Date/Time Entered</th>
-        <th scope="col">Origin Workstation</th>
-        <th scope="col">Nonconforming Description</th>
-        <th scope="col">Date/Time Resolved</th>
-        <th scope="col">Date/Time Left Clinic</th>
-        <th schole="col">Resolved</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <th scope="row">1</th>
-        <td>1-01-2021, 16:20</td>
-        <td>1-01-2021, 17:20</td>
-        <td>Station 1</td>
-        <td>Tag is broken</td>
-        <td>1-02-2021, 10:00</td>
-        <td>1-02-2021, 13:00</td>
-        <td>
-            <button type="button" class="btn btn-primary px-3">
-                Resolve
-            </button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <table id = 'clinic-table' class="table table-striped table-sm table-bordered my-3">
+        <thead>
+        <tr>
+            <th class="text-center" colspan="8">Tag Malfunctions</th>
+        </tr>
+        <tr>
+            <th style="width:20%">Tag Name</th>
+            <th style="width:20%">Date/Time Entered</th>
+            <th style="width:20%">Origin Workstation</th>
+            <th style="width:40%">Nonconforming Description</th>
+            <th style="width:20%">Date/Time Resolved</th>
+            <th style="width:20%">Resolved</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in clinic_items %}
+        <tr>
+            <td id='tag_id'>{{ item.tag_id }}</td>
+            <td id = 'date/time entered'>{{ item.added_to_clinic }}</td>
+            <td id = 'workstation'>{{ item.from_zone.0 }}</td>
+            <td id = 'description'>{{ item.problem }}</td>
+            <td id = 'date/time resolved'>{{ item.removed_from_clinic }}</td>
+            <td id = 'delete_row'>
+                <button type ="button" class ="btn btn-sm btn-success">Resolve</button>
+            </td>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
 </div>
 {% endblock content %}

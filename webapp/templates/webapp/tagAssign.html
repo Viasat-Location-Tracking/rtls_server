@@ -10,16 +10,10 @@
 -->
 
 {% block content %}
-    <h1>You know what you clicked on</h1>
-
-
-    
-
-
     <!-- Tag assignment stuff-->
-    <form method = "post" action = "insert_tagAssign" >
+    <form method = "post" action = "insert_tagAssign" class="mt-3">
         {% csrf_token %}
-        <div class="row invisible">
+        <div class="row invisible" style="display:none;">
             <div class="form-group">
             <label for="num_TB" class="sr-only">num ID</label>
             <input type="text" name="num_TB" class="form-control" id="num_TB" placeholder="1234">
@@ -43,7 +37,7 @@
             <input type="text" name="time_TB" class="form-control" id="time_TB" value="2021-05-17 20:47:00-07">
             </div>
         </div>
-        <button type="submit" class="btn btn-primary mb-2">Confirm Tag Assignment</button>
+        <button type="submit" class="btn btn-primary my-2">Confirm Tag Assignment</button>
 
         
     </form>
@@ -72,12 +66,11 @@
     </table>
 
     <!-- Testing Table-->
-    <table class="table" id="main_table">
+    {% comment %} <table class="table" id="main_table">
         <thead>
             <tr>
                 <th>Tag ID</th>
                 <th>Serial Number</th>
-                {% comment %} <th>Remove</th> {% endcomment %}
             </tr>
         </thead>
         <tbody>
@@ -93,7 +86,8 @@
             </tr>
             {% endfor %}
         </tbody>
-    </table>
+    </table> {% endcomment %}
+
 
 {% endblock content %}
 
